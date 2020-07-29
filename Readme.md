@@ -1,7 +1,7 @@
 # Личный проект «Большое путешествие» [![Build status][travis-image]][travis-url]
 
 * Студент: [Viktoria Nosick](https://up.htmlacademy.ru/ecmascript/12/user/469679).
-* Наставник: `Неизвестно`.
+* Наставник: [Валерий Кобзарь](https://htmlacademy.ru/profile/id1431125).
 
 ---
 
