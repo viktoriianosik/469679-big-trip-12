@@ -6,8 +6,11 @@ import {createEventWithoutDestinationTemplate} from './view/event-without-destin
 import {createDaysListTemplate} from './view/days-list.js';
 import {createDayTemplate} from './view/day.js';
 import {createEventTemplate} from './view/event.js';
+import {generateEvent} from './mock/event.js';
 
-const EVENT_COUNT = 3;
+const EVENT_COUNT = 15;
+
+export const events = new Array(EVENT_COUNT).fill().map(generateEvent);
 
 const tripMainElement = document.querySelector(`.trip-main`);
 
@@ -27,15 +30,29 @@ const mainElement = document.querySelector(`.page-main`);
 const tripEventsElement = mainElement.querySelector(`.trip-events`);
 
 renderTemplate(tripEventsElement, `beforeend`, createSortElement());
-renderTemplate(tripEventsElement, `beforeend`, createEventWithoutDestinationTemplate());
+renderTemplate(tripEventsElement, `beforeend`, createEventWithoutDestinationTemplate(events[0]));
 renderTemplate(tripEventsElement, `beforeend`, createDaysListTemplate());
 
 const daysListElement = tripEventsElement.querySelector(`.trip-days`);
 
-renderTemplate(daysListElement, `beforeend`, createDayTemplate());
+const createDaysTemplate = (evts) => {
+  const dates = () => {
+    return evts.map((event) => new Date(event.beginDate).toDateString());
+  };
 
-const eventsListElement = daysListElement.querySelector(`.trip-events__list`);
+  const uniqueDates = [...new Set(dates())];
 
-for (let i = 0; i < EVENT_COUNT; i++) {
-  renderTemplate(eventsListElement, `beforeend`, createEventTemplate());
-}
+  uniqueDates.sort().forEach((date, dateCount) => {
+    renderTemplate(daysListElement, `beforeend`, createDayTemplate(dateCount + 1, date));
+    const tripEventsLists = daysListElement.querySelectorAll(`.trip-events__list`);
+
+    evts
+    .filter((event) => new Date(event.beginDate).toDateString() === date)
+    .forEach((event) => {
+      renderTemplate(tripEventsLists[dateCount], `beforeend`, createEventTemplate(event));
+    });
+  });
+};
+
+createDaysTemplate(events);
+
