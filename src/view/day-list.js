@@ -1,6 +1,6 @@
 import {createElement} from '../utils.js';
 
-const createDaysListTemplate = () => {
+const createDayListTemplate = () => {
   return (
     `<ul class="trip-days"></ul>`
   );
@@ -12,7 +12,7 @@ export default class DaysList {
   }
 
   getTemplate() {
-    return createDaysListTemplate();
+    return createDayListTemplate();
   }
 
   getElement() {
