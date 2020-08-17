@@ -1,4 +1,4 @@
-import {getEventTypeAction} from '../utils.js';
+import {getEventTypeAction, createElement} from '../utils.js';
 import {EVENT_TYPES_ACTION, EVENT_OFFERS, EVENT_TYPES_TRANSFER, EVENT_TYPES_ACTIVITY} from '../const.js';
 
 const createOfferItem = (offer, isChecked) => {
@@ -42,7 +42,7 @@ const createPhotos = (photos) => {
   return photos.map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`).join(``);
 };
 
-export const createEventWithoutDestinationTemplate = (event) => {
+const createEventEditTemplate = (event) => {
   const {type, destination, description, beginDate, endDate, offers, photos} = event;
   const dateOptions = {
     day: `numeric`,
@@ -131,3 +131,26 @@ export const createEventWithoutDestinationTemplate = (event) => {
     </form>`
   );
 };
+
+export default class EventEdit {
+  constructor(event) {
+    this._event = event;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createEventEditTemplate(this._event);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

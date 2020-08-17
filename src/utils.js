@@ -1,3 +1,33 @@
+export const RenderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  AFTEREND: `afterend`,
+  BEFOREEND: `beforeend`,
+};
+
+export const renderTemplate = (container, position, template) => {
+  container.insertAdjacentHTML(position, template);
+};
+
+export const createElement = (fragment) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = fragment;
+  return newElement.firstChild;
+};
+
+export const render = (container, element, position) => {
+  switch (position) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.AFTEREND:
+      container.after(element);
+      break;
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+  }
+};
+
 export const randomArrayItem = function (array) {
   return array[Math.floor(Math.random() * array.length)];
 };
