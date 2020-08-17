@@ -6,10 +6,11 @@ import EventEditView from './view/event-edit.js';
 import DayListView from './view/day-list.js';
 import DayView from './view/day.js';
 import EventView from './view/event.js';
+import NoPointView from './view/no-point.js';
 import {generateEvent} from './mock/event.js';
 import {RenderPosition, render} from './utils.js';
 
-const EVENT_COUNT = 15;
+const EVENT_COUNT = 18;
 
 export const events = new Array(EVENT_COUNT).fill().map(generateEvent);
 
@@ -48,26 +49,29 @@ const renderEvent = (container, event) => {
 };
 
 const tripMainElement = document.querySelector(`.trip-main`);
-
-render(tripMainElement, new TripInfoView().getElement(), RenderPosition.AFTERBEGIN);
-
 const tripControlsContainer = tripMainElement.querySelector(`.trip-main__trip-controls`);
 const tripControlsTitles = tripControlsContainer.querySelectorAll(`h2`);
 
+render(tripMainElement, new TripInfoView().getElement(), RenderPosition.AFTERBEGIN);
 render(tripControlsTitles[0], new MenuView().getElement(), RenderPosition.AFTEREND);
 render(tripControlsTitles[1], new FilterView().getElement(), RenderPosition.AFTEREND);
 
-const mainElement = document.querySelector(`.page-main`);
-const tripEventsElement = mainElement.querySelector(`.trip-events`);
+const renderList = (evts) => {
+  const mainElement = document.querySelector(`.page-main`);
+  const tripEventsElement = mainElement.querySelector(`.trip-events`);
 
-render(tripEventsElement, new SortView().getElement(), RenderPosition.BEFOREEND);
+  if (evts.length === 0) {
+    render(tripEventsElement, new NoPointView().getElement(), RenderPosition.BEFOREEND);
+    return;
+  }
 
-const dayListComponent = new DayListView();
-render(tripEventsElement, dayListComponent.getElement(), RenderPosition.BEFOREEND);
+  render(tripEventsElement, new SortView().getElement(), RenderPosition.BEFOREEND);
 
-const daysListElement = tripEventsElement.querySelector(`.trip-days`);
+  const dayListComponent = new DayListView();
+  render(tripEventsElement, dayListComponent.getElement(), RenderPosition.BEFOREEND);
 
-const createDaysTemplate = (evts) => {
+  const daysListElement = tripEventsElement.querySelector(`.trip-days`);
+
   const dates = () => {
     return evts.map((event) => new Date(event.beginDate).toDateString());
   };
@@ -86,5 +90,6 @@ const createDaysTemplate = (evts) => {
   });
 };
 
-createDaysTemplate(events);
+renderList(events);
+
 
