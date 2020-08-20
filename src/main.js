@@ -8,7 +8,7 @@ import DayView from './view/day.js';
 import EventView from './view/event.js';
 import NoPointView from './view/no-point.js';
 import {generateEvent} from './mock/event.js';
-import {RenderPosition, render} from './utils.js';
+import {RenderPosition, render, sortByDate} from './utils.js';
 
 const EVENT_COUNT = 18;
 
@@ -56,11 +56,11 @@ render(tripMainElement, new TripInfoView().getElement(), RenderPosition.AFTERBEG
 render(tripControlsTitles[0], new MenuView().getElement(), RenderPosition.AFTEREND);
 render(tripControlsTitles[1], new FilterView().getElement(), RenderPosition.AFTEREND);
 
-const renderList = (evts) => {
+const renderList = (points) => {
   const mainElement = document.querySelector(`.page-main`);
   const tripEventsElement = mainElement.querySelector(`.trip-events`);
 
-  if (evts.length === 0) {
+  if (points.length === 0) {
     render(tripEventsElement, new NoPointView().getElement(), RenderPosition.BEFOREEND);
     return;
   }
@@ -73,19 +73,19 @@ const renderList = (evts) => {
   const daysListElement = tripEventsElement.querySelector(`.trip-days`);
 
   const dates = () => {
-    return evts.map((event) => new Date(event.beginDate).toDateString());
+    return points.map((point) => new Date(point.beginDate).toDateString());
   };
 
   const uniqueDates = [...new Set(dates())];
 
-  uniqueDates.sort().forEach((date, dateCount) => {
+  uniqueDates.sort(sortByDate).forEach((date, dateCount) => {
     render(dayListComponent.getElement(), new DayView(dateCount + 1, date).getElement(), RenderPosition.BEFOREEND);
     const tripEventsLists = daysListElement.querySelectorAll(`.trip-events__list`);
 
-    evts
-    .filter((event) => new Date(event.beginDate).toDateString() === date)
-    .forEach((event) => {
-      renderEvent(tripEventsLists[dateCount], event);
+    points
+    .filter((point) => new Date(point.beginDate).toDateString() === date)
+    .forEach((point) => {
+      renderEvent(tripEventsLists[dateCount], point);
     });
   });
 };
