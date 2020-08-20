@@ -16,7 +16,7 @@ const creatEventOffer = (offers) => {
 };
 
 const convertTimeFormat = (time) => {
-  return (`0` + time).slice(-2);
+  return time.toString().padStart(2, `0`);
 };
 
 const calculateEventDuration = (start, end) => {
