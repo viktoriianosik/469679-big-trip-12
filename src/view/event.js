@@ -1,5 +1,5 @@
 import {EVENT_TYPES_ACTION} from '../const.js';
-import {getEventTypeAction} from '../utils.js';
+import {getEventTypeAction, createElement} from '../utils.js';
 
 const MINUTES_PER_HOUR = 60;
 const HOURS_PER_DAY = 24;
@@ -16,7 +16,7 @@ const creatEventOffer = (offers) => {
 };
 
 const convertTimeFormat = (time) => {
-  return (`0` + time).slice(-2);
+  return time.toString().padStart(2, `0`);
 };
 
 const calculateEventDuration = (start, end) => {
@@ -40,7 +40,7 @@ const calculateEventDuration = (start, end) => {
   return convertTimeFormat(minuteAmount) + `M`;
 };
 
-export const createEventTemplate = (event) => {
+const createEventTemplate = (event) => {
   const {type, destination, price, offers, beginDate, endDate} = event;
   const offersTemplate = creatEventOffer(offers);
   const beginHoursTemplate = convertTimeFormat(beginDate.getHours());
@@ -82,3 +82,26 @@ export const createEventTemplate = (event) => {
     </li>`
   );
 };
+
+export default class Event {
+  constructor(event) {
+    this._event = event;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createEventTemplate(this._event);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
