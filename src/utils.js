@@ -55,3 +55,8 @@ export const getEventTypeAction = (type, obj) => {
   }
   return action;
 };
+
+
+export const sortByDate = (dateA, dateB) => {
+  return new Date(dateA) - new Date(dateB);
+};
