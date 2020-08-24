@@ -1,5 +1,6 @@
-import {getEventTypeAction, createElement} from '../utils.js';
+import {getEventTypeAction} from '../utils/event.js';
 import {EVENT_TYPES_ACTION, EVENT_OFFERS, EVENT_TYPES_TRANSFER, EVENT_TYPES_ACTIVITY} from '../const.js';
+import AbstaractView from './adstract.js';
 
 const createOfferItem = (offer, isChecked) => {
   const offerID = offer.name.split(` `).splice(-1);
@@ -132,25 +133,24 @@ const createEventEditTemplate = (event) => {
   );
 };
 
-export default class EventEdit {
+export default class EventEdit extends AbstaractView {
   constructor(event) {
+    super();
     this._event = event;
-    this._element = null;
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
   }
 
   getTemplate() {
     return createEventEditTemplate(this._event);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit();
   }
 
-  removeElement() {
-    this._element = null;
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().addEventListener(`submit`, this._formSubmitHandler);
   }
 }

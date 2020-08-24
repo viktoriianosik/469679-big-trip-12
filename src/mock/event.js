@@ -1,4 +1,4 @@
-import {generateRandomArray, randomArrayItem, getRandomInteger} from '../utils.js';
+import {generateRandomArray, randomArrayItem, getRandomInteger} from '../utils/common.js';
 import {EVENT_TYPES, EVENT_DESTINATION, DESCRIPTIONS, EVENT_OFFERS} from '../const.js';
 
 const EVENT_OFFERS_MAX_COUNT = 3;
