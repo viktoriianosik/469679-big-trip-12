@@ -9,7 +9,7 @@ export const getEventTypeAction = (type, obj) => {
 };
 
 
-export const sorEventstByDate = (dateA, dateB) => {
+export const sortEventsByDate = (dateA, dateB) => {
   return new Date(dateA) - new Date(dateB);
 };
 

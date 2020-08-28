@@ -21,9 +21,10 @@ export default class Trip {
     this._handlerSortTypeChange = this._handlerSortTypeChange.bind(this);
   }
 
-  init(tripEvents) {
+  init(tripEvents, typesOffers) {
     this._tripEvents = tripEvents.slice();
     this._sourcedTripEvents = tripEvents.slice();
+    this._typesOffers = typesOffers;
     this._renderTrip();
   }
 
@@ -45,7 +46,7 @@ export default class Trip {
     render(this._dayListComponent, new DayView(``, ``), RenderPosition.BEFOREEND);
     const tripEventsLists = this._dayListComponent.getElement().querySelector(`.trip-events__list`);
     this._tripEvents.forEach((tripEvent) => {
-      this._renderEvent(tripEventsLists, tripEvent);
+      this._renderEvent(tripEventsLists, tripEvent, this._typesOffers);
     });
   }
 
@@ -81,9 +82,9 @@ export default class Trip {
     render(this._tripEventsContainer, this._dayListComponent, RenderPosition.BEFOREEND);
   }
 
-  _renderEvent(container, event) {
+  _renderEvent(container, event, typesOffers) {
     const eventComponent = new EventView(event);
-    const eventEditComponent = new EventEditView(event);
+    const eventEditComponent = new EventEditView(event, typesOffers);
 
     const replacePointToForm = () => {
       container.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
@@ -111,6 +112,11 @@ export default class Trip {
       document.removeEventListener(`keydown`, onEscKeyDown);
     });
 
+    eventEditComponent.setCloseClickHandler(() => {
+      replaceFormToPoint();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    });
+
     render(container, eventComponent.getElement(), RenderPosition.BEFOREEND);
   }
 
@@ -128,7 +134,7 @@ export default class Trip {
       this._tripEvents
       .filter((tripEvent) => new Date(tripEvent.beginDate).toDateString() === date)
       .forEach((tripEvent) => {
-        this._renderEvent(tripEventsLists[dateCount], tripEvent);
+        this._renderEvent(tripEventsLists[dateCount], tripEvent, this._typesOffers);
       });
     });
   }

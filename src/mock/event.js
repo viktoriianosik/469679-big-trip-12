@@ -1,7 +1,6 @@
 import {generateRandomArray, randomArrayItem, getRandomInteger} from '../utils/common.js';
-import {EVENT_TYPES, EVENT_DESTINATION, DESCRIPTIONS, EVENT_OFFERS} from '../const.js';
+import {EVENT_TYPES, EVENT_DESTINATION, DESCRIPTIONS} from '../const.js';
 
-const EVENT_OFFERS_MAX_COUNT = 3;
 const EVENT_DESCRIPTION_MAX_SENTENCE = 5;
 
 const generatePhotos = () => {
@@ -21,11 +20,13 @@ const generateRandomEndDate = () => {
   return new Date(start + Math.random() * (end - start));
 };
 
-export const generateEvent = () => {
+export const generateEvent = (array) => {
+  const type = randomArrayItem(EVENT_TYPES);
+  const typeOffers = array.find((el) => el.type === type);
   return {
-    type: randomArrayItem(EVENT_TYPES),
+    type,
     destination: randomArrayItem(EVENT_DESTINATION),
-    offers: generateRandomArray(EVENT_OFFERS, EVENT_OFFERS_MAX_COUNT),
+    offers: generateRandomArray(typeOffers.offers, typeOffers.offers.length),
     description: generateRandomArray(DESCRIPTIONS, EVENT_DESCRIPTION_MAX_SENTENCE),
     photos: generatePhotos(),
     price: getRandomInteger(20, 1000),

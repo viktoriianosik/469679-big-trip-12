@@ -4,11 +4,12 @@ import FilterView from './view/filter.js';
 import TripPresenter from './presenter/trip.js';
 import {RenderPosition, render} from './utils/render.js';
 import {generateEvent} from './mock/event.js';
+import {generateOffersForAllType} from './mock/offer.js';
 
 const EVENT_COUNT = 15;
 
-export const events = new Array(EVENT_COUNT).fill().map(generateEvent);
-
+export const typesOffers = generateOffersForAllType();
+export const events = new Array(EVENT_COUNT).fill().map(() => generateEvent(typesOffers));
 
 const tripMainElement = document.querySelector(`.trip-main`);
 const tripControlsContainer = tripMainElement.querySelector(`.trip-main__trip-controls`);
@@ -20,4 +21,4 @@ render(tripMainElement, new TripInfoView(), RenderPosition.AFTERBEGIN);
 render(tripControlsTitles[0], new MenuView(), RenderPosition.AFTEREND);
 render(tripControlsTitles[1], new FilterView(), RenderPosition.AFTEREND);
 
-tripPresenter.init(events);
+tripPresenter.init(events, typesOffers);

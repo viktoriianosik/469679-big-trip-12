@@ -43,7 +43,7 @@ const calculateEventDuration = (start, end) => {
 
 const createEventTemplate = (event) => {
   const {type, destination, price, offers, beginDate, endDate} = event;
-  const offersTemplate = creatEventOffer(offers);
+  const offersTemplate = creatEventOffer(offers.slice(0, 3));
   const beginHoursTemplate = convertTimeFormat(beginDate.getHours());
   const beginMinutesTemplate = convertTimeFormat(beginDate.getMinutes());
   const endHoursTemplate = convertTimeFormat(endDate.getHours());
