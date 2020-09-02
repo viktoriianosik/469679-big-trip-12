@@ -5,7 +5,7 @@ export const EVENT_TYPES_ACTION = {
   to: EVENT_TYPES_TRANSFER,
   in: EVENT_TYPES_ACTIVITY,
 };
-export const EVENT_DESTINATION = [`Kiev`, `Lviv`, `Berlin`, `Madrid`, `Paris`, `Amsterdam`, `Copenhagen`, `Milan`, `Barselona`];
+export const EVENT_DESTINATIONS = [`Kiev`, `Lviv`, `Berlin`, `Madrid`, `Paris`, `Amsterdam`, `Copenhagen`, `Milan`, `Barselona`];
 export const EVENT_OFFERS = [
   {
     name: `Add luggage`,

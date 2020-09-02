@@ -15,3 +15,17 @@ export const generateRandomArray = function (array, number) {
   const newArray = shuffleArray(array).slice(0, newAmount);
   return newArray;
 };
+
+export const updateItem = (items, update) => {
+  const index = items.findIndex((item) => item.id === update.id);
+
+  if (index === -1) {
+    return items;
+  }
+
+  return [
+    ...items.slice(0, index),
+    update,
+    ...items.slice(index + 1)
+  ];
+};

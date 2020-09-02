@@ -1,24 +1,26 @@
 import SortView from '../view/sort.js';
-import EventEditView from '../view/event-edit.js';
 import DayListView from '../view/day-list.js';
 import DayView from '../view/day.js';
-import EventView from '../view/event.js';
 import NoPointView from '../view/no-point.js';
+import EventPresenter from './event.js';
 import {RenderPosition, render} from '../utils/render.js';
 import {sortEventsByDate, sortEventsByPrice, sortEventsByTime} from '../utils/event.js';
+import {updateItem} from '../utils/common.js';
 import {SortType} from '../const.js';
 
 export default class Trip {
   constructor(tripEventsContainer) {
     this._tripEventsContainer = tripEventsContainer;
     this._currentSortType = SortType.EVENT;
+    this._eventPresenter = {};
 
     this._sortComponent = new SortView();
     this._dayListComponent = new DayListView();
-    this._eventComponent = new EventView();
     this._noPointComponent = new NoPointView();
 
     this._handlerSortTypeChange = this._handlerSortTypeChange.bind(this);
+    this._handleEventChange = this._handleEventChange.bind(this);
+    this._handleModeChange = this._handleModeChange.bind(this);
   }
 
   init(tripEvents, typesOffers) {
@@ -51,6 +53,10 @@ export default class Trip {
   }
 
   _clearDayList() {
+    Object
+      .values(this._eventPresenter)
+      .forEach((presenter) => presenter.destroy());
+    this._eventPresenter = {};
     this._dayListComponent.getElement().innerHTML = ``;
   }
 
@@ -82,42 +88,22 @@ export default class Trip {
     render(this._tripEventsContainer, this._dayListComponent, RenderPosition.BEFOREEND);
   }
 
+  _handleEventChange(updatedEvent) {
+    this._tripEvents = updateItem(this._tripEvents, updatedEvent);
+    this._sourcedTripEvents = updateItem(this._sourcedTripEvents, updatedEvent);
+    this._eventPresenter[updatedEvent.id].init(updatedEvent, this._typesOffers);
+  }
+
+  _handleModeChange() {
+    Object
+      .values(this._eventPresenter)
+      .forEach((presenter) => presenter.resetView());
+  }
+
   _renderEvent(container, event, typesOffers) {
-    const eventComponent = new EventView(event);
-    const eventEditComponent = new EventEditView(event, typesOffers);
-
-    const replacePointToForm = () => {
-      container.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
-    };
-
-    const replaceFormToPoint = () => {
-      container.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
-    };
-
-    const onEscKeyDown = (evt) => {
-      if (evt.key === `Escape` || evt.key === `Esc`) {
-        evt.preventDefault();
-        replaceFormToPoint();
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
-
-    eventComponent.setEditClickHandler(() => {
-      replacePointToForm();
-      document.addEventListener(`keydown`, onEscKeyDown);
-    });
-
-    eventEditComponent.setFormSubmitHandler(() => {
-      replaceFormToPoint();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    });
-
-    eventEditComponent.setCloseClickHandler(() => {
-      replaceFormToPoint();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    });
-
-    render(container, eventComponent.getElement(), RenderPosition.BEFOREEND);
+    const eventPresenter = new EventPresenter(container, this._handleEventChange, this._handleModeChange);
+    eventPresenter.init(event, typesOffers);
+    this._eventPresenter[event.id] = eventPresenter;
   }
 
   _renderDay() {
