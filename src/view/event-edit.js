@@ -1,6 +1,9 @@
 import {getEventTypeAction} from '../utils/event.js';
 import {EVENT_TYPES_ACTION, EVENT_TYPES_TRANSFER, EVENT_TYPES_ACTIVITY, EVENT_DESTINATIONS} from '../const.js';
 import SmartView from './smart.js';
+import flatpickr from 'flatpickr';
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+import moment from 'moment';
 
 const createOfferItem = (offer, isChecked) => {
   const offerID = offer.name.split(` `).splice(-1);
@@ -50,13 +53,6 @@ const createPhotos = (photos) => {
 const createEventEditTemplate = (data, typesOffers) => {
   const {type, destination, descriptions, beginDate, endDate, offers, photos, price, isFavorite} = data;
   const typeOffers = typesOffers.find((el) => el.type === type);
-  const dateOptions = {
-    day: `numeric`,
-    month: `numeric`,
-    year: `2-digit`,
-    hour: `numeric`,
-    minute: `numeric`,
-  };
   const createEventTransferTypeTemplate = createEventTypeGroup(EVENT_TYPES_TRANSFER);
   const createEventActivityTypeTemplate = createEventTypeGroup(EVENT_TYPES_ACTIVITY);
   const createPhotosTemplate = createPhotos(photos);
@@ -99,12 +95,12 @@ const createEventEditTemplate = (data, typesOffers) => {
           <label class="visually-hidden" for="event-start-time-1">
             From
           </label>
-          <input class="event__input  event__input--time" id="event-start-time" type="text" name="event-start-time" value="${beginDate.toLocaleString(`en-GB`, dateOptions).replace(/,/g, ``)}">
+          <input class="event__input  event__input--time" id="event-start-time" type="text" name="event-start-time" value="${moment(beginDate).format(`DD/MM/YY HH:mm`)}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">
             To
           </label>
-          <input class="event__input  event__input--time" id="event-end-time" type="text" name="event-end-time" value="${endDate.toLocaleString(`en-GB`, dateOptions).replace(/,/g, ``)}">
+          <input class="event__input  event__input--time" id="event-end-time" type="text" name="event-end-time" value="${moment(endDate).format(`DD/MM/YY HH:mm`)}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -151,14 +147,21 @@ export default class EventEdit extends SmartView {
     super();
     this._data = data;
     this._typesOffres = typesOffers;
+    this._beginDatepickr = null;
+    this._endDatepickr = null;
+
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._closeClickHandler = this._closeClickHandler.bind(this);
     this._favotiteClickHandler = this._favotiteClickHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._priceInputHandler = this._priceInputHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
+    this._endDateChangeHandler = this._endDateChangeHandler.bind(this);
+    this._beginDateChangeHandler = this._beginDateChangeHandler.bind(this);
 
     this._setInnerHandlers();
+    this._setBeginDatepickr();
+    this._setEndDatepickr();
   }
 
   getTemplate() {
@@ -194,8 +197,60 @@ export default class EventEdit extends SmartView {
     );
   }
 
+  _setBeginDatepickr() {
+    if (this._beginDatepickr) {
+      this._beginDatepickr.destroy();
+      this._beginDatepickr = null;
+    }
+    this._beginDatepickr = flatpickr(
+        this.getElement().querySelector(`#event-start-time`),
+        {
+          dateFormat: `d/m/y H:i`,
+          enableTime: true,
+          defaultDate: this._data.beginDate,
+          maxDate: this._data.endDate,
+          onChange: this._beginDateChangeHandler,
+        }
+    );
+  }
+
+  _setEndDatepickr() {
+    if (this._endDatepickr) {
+      this._endDatepickr.destroy();
+      this._endDatepickr = null;
+    }
+    this._endDatepickr = flatpickr(
+        this.getElement().querySelector(`#event-end-time`),
+        {
+          dateFormat: `d/m/y H:i`,
+          enableTime: true,
+          defaultDate: this._data.endDate,
+          minDate: this._data.beginDate,
+          onChange: this._endDateChangeHandler,
+        }
+    );
+  }
+
+  _beginDateChangeHandler([userDate]) {
+    this.updateData(
+        {
+          beginDate: userDate,
+        }
+    );
+  }
+
+  _endDateChangeHandler([userDate]) {
+    this.updateData(
+        {
+          endDate: userDate,
+        }
+    );
+  }
+
   restoreHandlers() {
     this._setInnerHandlers();
+    this._setBeginDatepickr();
+    this._setEndDatepickr();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setCloseClickHandler(this._callback.closeClick);
     this.setFavoriteClickhandler(this._callback.favotiteClick);

@@ -1,6 +1,7 @@
 import {EVENT_TYPES_ACTION} from '../const.js';
 import {getEventTypeAction} from '../utils/event.js';
 import AbstaractView from './adstract.js';
+import moment from 'moment';
 
 const MINUTES_PER_HOUR = 60;
 const HOURS_PER_DAY = 24;
@@ -44,10 +45,6 @@ const calculateEventDuration = (start, end) => {
 const createEventTemplate = (event) => {
   const {type, destination, price, offers, beginDate, endDate} = event;
   const offersTemplate = creatEventOffer(offers.slice(0, 3));
-  const beginHoursTemplate = convertTimeFormat(beginDate.getHours());
-  const beginMinutesTemplate = convertTimeFormat(beginDate.getMinutes());
-  const endHoursTemplate = convertTimeFormat(endDate.getHours());
-  const endMinutesTemplate = convertTimeFormat(endDate.getMinutes());
   const eventDurationTemplate = calculateEventDuration(beginDate, endDate);
 
   return (
@@ -60,9 +57,9 @@ const createEventTemplate = (event) => {
 
         <div class="event__schedule">
           <p class="event__time">
-            <time class="event__start-time" datetime="${beginDate.toLocaleString()}">${beginHoursTemplate} : ${beginMinutesTemplate}</time>
+            <time class="event__start-time" datetime="${beginDate.toLocaleString()}">${moment(beginDate).format(`HH:mm`)}</time>
             &mdash;
-            <time class="event__end-time" datetime="${endDate.toLocaleString()}">${endHoursTemplate} : ${endMinutesTemplate}</time>
+            <time class="event__end-time" datetime="${endDate.toLocaleString()}">${moment(endDate).format(`HH:mm`)}</time>
           </p>
           <p class="event__duration">${eventDurationTemplate}</p>
         </div>
