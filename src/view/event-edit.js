@@ -51,12 +51,14 @@ const createPhotos = (photos) => {
 };
 
 const createEventEditTemplate = (data, typesOffers) => {
-  const {type, destination, descriptions, beginDate, endDate, offers, photos, price, isFavorite} = data;
+  const {type, destination, cityDescriptions, beginDate, endDate, offers, photos, price, isFavorite} = data;
   const typeOffers = typesOffers.find((el) => el.type === type);
   const createEventTransferTypeTemplate = createEventTypeGroup(EVENT_TYPES_TRANSFER);
   const createEventActivityTypeTemplate = createEventTypeGroup(EVENT_TYPES_ACTIVITY);
   const createPhotosTemplate = createPhotos(photos);
-  const description = destination.length !== 0 ? descriptions.find((el) => el.destination === destination).description : ``;
+  const cityDescription = cityDescriptions.find((el) => el.destination === destination);
+  const description = cityDescription ? cityDescription.description : ``;
+
 
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">

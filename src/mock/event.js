@@ -3,7 +3,7 @@ import {EVENT_TYPES, EVENT_DESTINATIONS, DESCRIPTIONS} from '../const.js';
 
 const EVENT_DESCRIPTION_MAX_SENTENCE = 5;
 
-const descriptions = EVENT_DESTINATIONS.map((destination) => {
+const cityDescriptions = EVENT_DESTINATIONS.map((destination) => {
   return ({
     destination,
     description: generateRandomArray(DESCRIPTIONS, EVENT_DESCRIPTION_MAX_SENTENCE),
@@ -38,7 +38,7 @@ export const generateEvent = (array) => {
     type,
     destination: randomArrayItem(EVENT_DESTINATIONS),
     offers: generateRandomArray(typeOffers.offers, typeOffers.offers.length),
-    descriptions,
+    cityDescriptions,
     photos: generatePhotos(),
     price: getRandomInteger(20, 1000),
     beginDate: generateRandomBeginDate(),
