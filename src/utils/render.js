@@ -57,11 +57,13 @@ export const replace = (newChild, oldChild) => {
 };
 
 export const remove = (component) => {
+  const isAbstract = (component instanceof Abstract);
+
   if (component === null) {
     return;
   }
 
-  if (!(component instanceof Abstract)) {
+  if (!isAbstract) {
     throw new Error(`Can remove only components`);
   }
 
