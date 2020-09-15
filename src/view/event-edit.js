@@ -59,7 +59,6 @@ const createEventEditTemplate = (data, typesOffers) => {
   const cityDescription = cityDescriptions.find((el) => el.destination === destination);
   const description = cityDescription ? cityDescription.description : ``;
 
-
   return (
     `<form class="trip-events__item  event  event--edit" action="#" method="post">
       <header class="event__header">
